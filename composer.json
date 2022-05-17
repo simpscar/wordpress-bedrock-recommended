@@ -20,7 +20,7 @@
         }
     ],
     "require": {
-        "composer/installers": "^1.9",
+        "composer/installers": "*",
         "pantheon-systems/wordpress-integrations": "*",
         "pantheon-upstreams/upstream-configuration": "*"
     },
@@ -30,7 +30,11 @@
         "optimize-autoloader": true,
         "sort-packages": true,
         "platform": {
-          "php": "7.4"
+          "php": "8.0"
+        },
+        "allow-plugins": {
+            "composer/installers": true,
+            "roots/wordpress-core-installer": true
         }
     },
     "extra": {

@@ -99,3 +99,6 @@ Thumbs.db
 # SASS #
 ##########
 .sass-cache
+
+# Environment Variables
+.env

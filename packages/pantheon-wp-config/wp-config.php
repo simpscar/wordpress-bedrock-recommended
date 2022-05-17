@@ -18,12 +18,11 @@ require_once( $rootPath . '/vendor/autoload.php' );
  * Fetch .env
  */
 if ( ! isset( $_ENV['PANTHEON_ENVIRONMENT'] ) && file_exists( $rootPath . '/.env' ) ) {
-	$dotenv = Dotenv\Dotenv::create($rootPath);
+	$dotenv = Dotenv\Dotenv::createImmutable($rootPath);
 	$dotenv->load();
 	$dotenv->required( array(
 		'DB_NAME',
 		'DB_USER',
-		'DB_HOST',
 	) )->notEmpty();
 }
 
@@ -32,11 +31,6 @@ if ( ! isset( $_ENV['PANTHEON_ENVIRONMENT'] ) && file_exists( $rootPath . '/.env
  */
 define( 'DISALLOW_FILE_EDIT', true );
 define( 'DISALLOW_FILE_MODS', true );
-
-/**
- * Force SSL
- */
-define( 'FORCE_SSL_ADMIN', true );
 
 /**
  * Limit post revisions
@@ -65,16 +59,16 @@ if ( ! isset( $_ENV['PANTHEON_ENVIRONMENT'] ) ):
 	/**
 	 * Set Database Details
 	 */
-	define( 'DB_NAME', getenv( 'DB_NAME' ) );
-	define( 'DB_USER', getenv( 'DB_USER' ) );
-	define( 'DB_PASSWORD', getenv( 'DB_PASSWORD' ) !== false ? getenv( 'DB_PASSWORD' ) : '' );
-	define( 'DB_HOST', getenv( 'DB_HOST' ) );
+	define( 'DB_NAME', $_ENV['DB_NAME'] );
+	define( 'DB_USER', $_ENV['DB_USER'] );
+	define( 'DB_PASSWORD', isset( $_ENV['DB_PASSWORD'] ) !== false ? $_ENV['DB_PASSWORD'] : '' );
+	define( 'DB_HOST', isset( $_ENV['DB_HOST'] ) !== false ? $_ENV['DB_HOST'] : 'localhost' );
 
 	/**
 	 * Set debug modes
 	 */
-	define( 'WP_DEBUG', getenv( 'WP_DEBUG' ) === 'true' ? true : false );
-	define( 'IS_LOCAL', getenv( 'IS_LOCAL' ) !== false ? true : false );
+	define( 'WP_DEBUG', isset($_ENV['WP_DEBUG']) !== false ? true : false );
+	define( 'IS_LOCAL', isset($_ENV['IS_LOCAL']) !== false ? true : false );
 
 	/**#@+
 	 * Authentication Unique Keys and Salts.
@@ -168,6 +162,13 @@ if ( isset( $_ENV['PANTHEON_ENVIRONMENT'] ) ):
 	endif;
 
 endif;
+
+/**
+ * Force SSL
+ */
+if (str_starts_with('https', WP_HOME)) {
+	define( 'FORCE_SSL_ADMIN', true );
+}
 
 /*
 * Define wp-content directory outside of WordPress core directory
